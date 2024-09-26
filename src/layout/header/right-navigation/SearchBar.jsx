@@ -1,23 +1,23 @@
 import { Box, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, useSearchParams } from "react-router-dom"; 
 import { useEffect } from "react";
 
 function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
 
+  const [searchParams, setSearchParams] = useSearchParams()
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
   };
 
-  // Update the URL whenever the searchTerm changes
+
   useEffect(() => {
-    const queryParam = searchTerm ? `?title=${encodeURIComponent(searchTerm)}` : "";
-    navigate(queryParam, { replace: true }); // Update URL without adding to history
-  }, [searchTerm, navigate]);
+
+    setSearchParams({title:searchTerm})
+  }, [searchTerm]);
 
   return (
     <Box sx={{ backgroundColor: "white", display: "flex", alignItems: "center", width: "100%" }}>

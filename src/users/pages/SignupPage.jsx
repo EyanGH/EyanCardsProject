@@ -36,7 +36,7 @@ export default function SignupPage() {
   } = useForm(initialSignupForm, signupSchema, handleSignup);
 
   const { user } = useCurrentUser();
-
+ 
   if (user) return <Navigate to={ROUTES.ROOT} replace />;
 
   return (
