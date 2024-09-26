@@ -12,6 +12,7 @@ export default function LeftNavBar() {
       <NavBarItem to={ROUTES.CARDS} label={"Cards"} />
       <NavBarItem to={ROUTES.ABOUT} label={"About"} />
       <NavBarItem to={ROUTES.SANDBOX} label={"Sandbox"} />
+      <NavBarItem to={ROUTES.MY_CARDS} label={"My Business Cards"} />
     </Box>
   );
 }

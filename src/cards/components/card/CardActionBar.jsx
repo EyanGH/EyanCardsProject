@@ -1,40 +1,33 @@
 import React from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import CallIcon from "@mui/icons-material/Call";
+import { IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Box, IconButton, CardActions } from "@mui/material";
-import { useCurrentUser } from "../../../users/providers/UserProvider";
-import { useNavigate } from "react-router-dom";
-import ROUTES from "../../../routes/routesModel";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function CardActionBar({
   cardId,
   handleDelete,
-  handleEdit,
   handleLike,
+  handleEdit,
+  isFavorite, 
 }) {
-  const user = useCurrentUser();
-  const navigate = useNavigate();
   return (
-    <CardActions sx={{ justifyContent: "space-between" }}>
-      <Box>
-        <IconButton onClick={() => handleDelete(cardId)}>
-          <DeleteIcon />
-        </IconButton>
+    <div>
+      {/* Edit Button */}
+      <IconButton onClick={() => handleEdit(cardId)}>
+        <EditIcon />
+      </IconButton>
 
-        <IconButton onClick={() => navigate(ROUTES.EDIT_CARD + "/" + cardId)}>
-          <ModeEditIcon />
-        </IconButton>
-      </Box>
-      <Box>
-        <IconButton>
-          <CallIcon />
-        </IconButton>
-        <IconButton onClick={() => handleLike(cardId)}>
-          <FavoriteIcon />
-        </IconButton>
-      </Box>
-    </CardActions>
+      {/* Delete Button */}
+      <IconButton onClick={() => handleDelete(cardId)}>
+        <DeleteIcon />
+      </IconButton>
+
+      {/* Like/Favorite Button */}
+      <IconButton onClick={() => handleLike(cardId)}>
+        {isFavorite ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+      </IconButton>
+    </div>
   );
 }

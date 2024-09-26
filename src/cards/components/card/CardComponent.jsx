@@ -1,6 +1,6 @@
 import * as React from "react";
 import Card from "@mui/material/Card";
-import { CardActionArea, CardHeader } from "@mui/material";
+import { CardActionArea } from "@mui/material";
 import CardHeaderComponent from "./CardHeaderComponent";
 import CardBody from "./CardBody";
 import CardActionBar from "./CardActionBar";
@@ -12,6 +12,7 @@ export default function CardComponent({
   handleDelete,
   handleEdit,
   handleLike,
+  isFavorite, 
 }) {
   const navigate = useNavigate();
   return (
@@ -37,6 +38,7 @@ export default function CardComponent({
         handleDelete={handleDelete}
         handleLike={handleLike}
         handleEdit={handleEdit}
+        isFavorite={isFavorite} 
       />
     </Card>
   );

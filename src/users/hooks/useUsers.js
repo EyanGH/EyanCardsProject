@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useCurrentUser } from "../providers/UserProvider";
-import { login } from "../services/usersApiService";
+import { login, signup } from "../services/usersApiService";
 import {
   getUser,
   setTokenInLocalStorage,
@@ -8,6 +8,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../../routes/routesModel";
 import { useSnack } from "../../providers/SnackbarProvider";
+import normalizeUser from "../../cards/helpers/normalization/normalizeUsers";
 
 export default function useUsers() {
   const [isLoading, setIsLoading] = useState();
@@ -32,9 +33,36 @@ export default function useUsers() {
     setIsLoading(false);
   }, []);
 
+  const handleSignup = useCallback(
+    async (userFromClient) => {
+      setIsLoading(true);
+      try {
+        const normalizedUser = normalizeUser(userFromClient);
+        await signup(normalizedUser);
+        await handleLogin({
+          email: userFromClient.email,
+          password: userFromClient.password,
+        });
+      } catch (error) {
+        setError(error.message);
+      } 
+        setIsLoading(false);
+      
+    },
+    [handleLogin]
+  );
+
+  const handleLogout = useCallback(() => {
+    removeToken();
+    setUser(null);
+  }, [setUser]);
+
+
   return {
     isLoading,
     error,
     handleLogin,
+    handleSignup,
+    handleLogout,
   };
 }

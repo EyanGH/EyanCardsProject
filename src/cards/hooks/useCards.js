@@ -3,7 +3,7 @@ import { useSnack } from "../../providers/SnackbarProvider";
 import axios from "axios";
 import useAxios from "../../hooks/useAxios";
 import { editCard } from "../services/cardsApiService";
-import { useNavigate, useLocation } from "react-router-dom"; // Import useLocation for query params
+import { useNavigate, useLocation } from "react-router-dom"; 
 import normalizeCard from "../helpers/normalization/normalizeCard";
 import ROUTES from "../../routes/routesModel";
 
@@ -16,18 +16,18 @@ export default function useCards() {
 
   const setSnack = useSnack();
   const navigate = useNavigate();
-  const location = useLocation(); // Access the current URL and query params
+  const location = useLocation(); 
   useAxios();
 
-  // Function to extract query params
+ 
   const getQueryParams = () => {
     const searchParams = new URLSearchParams(location.search);
     return {
-      title: searchParams.get("title") || "", // Get "title" query param or set an empty string if not found
+      title: searchParams.get("title") || "", 
     };
   };
 
-  // Get all cards from API
+
   const getAllCards = useCallback(async () => {
     setIsLoading(true);
 
@@ -37,7 +37,7 @@ export default function useCards() {
       );
       const cardsData = response.data;
       setCards(cardsData);
-      setFilteredCards(cardsData); // Set the initial state of filtered cards to all cards
+      setFilteredCards(cardsData); 
 
       setSnack("success", "All cards are here!");
     } catch (err) {
@@ -47,19 +47,18 @@ export default function useCards() {
     setIsLoading(false);
   }, [setSnack]);
 
-  // UseEffect to filter cards based on title query param
+  
   useEffect(() => {
-    const { title } = getQueryParams(); // Get the title from query params
-
+    const { title } = getQueryParams(); 
     if (title) {
       const filtered = cards.filter((card) =>
         card.title.toLowerCase().includes(title.toLowerCase())
       );
-      setFilteredCards(filtered); // Set filtered cards
+      setFilteredCards(filtered); 
     } else {
-      setFilteredCards(cards); // If no title, show all cards
+      setFilteredCards(cards); 
     }
-  }, [location.search, cards]); // Re-run this effect when query param or cards change
+  }, [location.search, cards]); 
 
   const getCardById = useCallback(async (id) => {
     try {
@@ -102,7 +101,7 @@ export default function useCards() {
   );
 
   return {
-    cards: filteredCards, // Return filteredCards instead of cards
+    cards: filteredCards, 
     card,
     error,
     isLoading,
