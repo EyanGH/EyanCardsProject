@@ -52,14 +52,14 @@ export default function EditCardPage() {
           onInputChange={handleChange}
           data={data}
         />
-        {card && (
+        {/* {card && (
           <CardComponent
             card={{ _id: id, ...normalizeCard(data) }}
             handleDelete={() => {}}
             handleEdit={() => {}}
             handleLike={() => {}}
           />
-        )}
+        )} */}
       </Container>
     </div>
   );

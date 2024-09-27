@@ -1,35 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CardComponent from "./card/CardComponent";
 import { Container } from "@mui/material";
+import ROUTES from "../../routes/routesModel";
 
-export default function Cards({ cards, handleDelete }) {
-  const [favoriteCards, setFavoriteCards] = useState([]);
-
-
-  useEffect(() => {
-    const storedFavorites = JSON.parse(localStorage.getItem("favoriteCards"));
-    if (storedFavorites) {
-      setFavoriteCards(storedFavorites);
-    }
-  }, []);
-
-
-  useEffect(() => {
-    localStorage.setItem("favoriteCards", JSON.stringify(favoriteCards));
-  }, [favoriteCards]);
-
-
-  const handleLike = (cardId) => {
-    if (favoriteCards.includes(cardId)) {
-      setFavoriteCards(favoriteCards.filter(id => id !== cardId)); 
-    } else {
-      setFavoriteCards([...favoriteCards, cardId]); 
-    }
-  };
-
-  const handleEdit = (id) => {
-    console.log("editing card " + id);
-  };
+export default function Cards({ cards, handleDelete, handleLike }) {
+  const navigate = useNavigate();
+  const handleEdit = (id) => navigate(ROUTES.EDIT_CARD + "/" + id);
 
   return (
     <Container sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -40,7 +16,6 @@ export default function Cards({ cards, handleDelete }) {
           handleDelete={handleDelete}
           handleLike={handleLike}
           handleEdit={handleEdit}
-          isFavorite={favoriteCards.includes(card._id)} 
         />
       ))}
     </Container>

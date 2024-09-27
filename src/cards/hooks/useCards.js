@@ -2,8 +2,8 @@ import { useCallback, useState, useEffect } from "react";
 import { useSnack } from "../../providers/SnackbarProvider";
 import axios from "axios";
 import useAxios from "../../hooks/useAxios";
-import { editCard } from "../services/cardsApiService";
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { changeLikeStatus, createCard, deleteCard, editCard, getMyCards as getMyCardsReq } from "../services/cardsApiService";
+import { useNavigate, useLocation } from "react-router-dom";
 import normalizeCard from "../helpers/normalization/normalizeCard";
 import ROUTES from "../../routes/routesModel";
 
@@ -16,14 +16,14 @@ export default function useCards() {
 
   const setSnack = useSnack();
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   useAxios();
 
- 
+
   const getQueryParams = () => {
     const searchParams = new URLSearchParams(location.search);
     return {
-      title: searchParams.get("title") || "", 
+      title: searchParams.get("title") || "",
     };
   };
 
@@ -37,7 +37,7 @@ export default function useCards() {
       );
       const cardsData = response.data;
       setCards(cardsData);
-      setFilteredCards(cardsData); 
+      setFilteredCards(cardsData);
 
       setSnack("success", "All cards are here!");
     } catch (err) {
@@ -47,18 +47,28 @@ export default function useCards() {
     setIsLoading(false);
   }, [setSnack]);
 
-  
+  const getMyCards = useCallback(async () => {
+    try {
+      const cards = await getMyCardsReq();
+      setCards(cards);
+    } catch (e) {
+      setError(e.message);
+    }
+
+    setIsLoading(false);
+  }, [setCards]);
+
   useEffect(() => {
-    const { title } = getQueryParams(); 
+    const { title } = getQueryParams();
     if (title) {
       const filtered = cards.filter((card) =>
         card.title.toLowerCase().includes(title.toLowerCase())
       );
-      setFilteredCards(filtered); 
+      setFilteredCards(filtered);
     } else {
-      setFilteredCards(cards); 
+      setFilteredCards(cards);
     }
-  }, [location.search, cards]); 
+  }, [location.search, cards]);
 
   const getCardById = useCallback(async (id) => {
     try {
@@ -73,12 +83,40 @@ export default function useCards() {
     setIsLoading(false);
   }, []);
 
-  const handleDelete = useCallback((id) => {
-    console.log("Card " + id + " deleted");
+  const handleCreate = useCallback(async (cardFromClient) => {
+    setIsLoading(true);
+
+    try {
+      const card = await createCard(normalizeCard(cardFromClient));
+      setCard(card);
+      setSnack("success", "The business card has been successfully created");
+      setTimeout(() => {
+        navigate(ROUTES.CARD_INFO + "/" + card._id);
+      }, 1000);
+    } catch (error) {
+      setError(error.message);
+    }
+
+    setIsLoading(false);
   }, []);
 
-  const handleLike = useCallback((id) => {
-    console.log("Card " + id + " has been liked");
+  const handleDelete = useCallback(async (id) => {
+    try {
+      if (confirm("Are you sure?")) {
+        setCards(prev => prev.filter((card) => card._id != id));
+        await deleteCard(id);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  }, []);
+
+  const handleLike = useCallback(async (id) => {
+    try {
+      await changeLikeStatus(id);
+    } catch (error) {
+      setError(error.message);
+    }
   }, []);
 
   const handleUpdateCard = useCallback(
@@ -90,7 +128,7 @@ export default function useCards() {
         setCard(card);
         setSnack("success", "The business card has been successfully updated");
         setTimeout(() => {
-          navigate(ROUTES.ROOT);
+          navigate(ROUTES.CARD_INFO + "/" + card._id);
         }, 1000);
       } catch (error) {
         setError(error.message);
@@ -101,12 +139,14 @@ export default function useCards() {
   );
 
   return {
-    cards: filteredCards, 
+    cards: filteredCards,
     card,
     error,
     isLoading,
+    getMyCards,
     getAllCards,
     getCardById,
+    handleCreate,
     handleDelete,
     handleLike,
     handleUpdateCard,

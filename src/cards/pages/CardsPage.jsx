@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PageHeader from "../../components/PageHeader";
-import Cards from "../components/Cards";
-import axios from "axios";
 import CardsFeedback from "../components/CardsFeedback";
 import { useSnack } from "../../providers/SnackbarProvider";
 import useCards from "../hooks/useCards";
+import AddCardButton from "../components/AddCardButton";
 
 export default function CardsPage() {
   const { cards, error, isLoading, getAllCards, handleDelete, handleLike } =
@@ -27,6 +26,7 @@ export default function CardsPage() {
         handleDelete={handleDelete}
         handleLike={handleLike}
       />
+      <AddCardButton />
     </div>
   );
 }
